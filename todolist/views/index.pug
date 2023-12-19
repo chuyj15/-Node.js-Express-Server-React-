@@ -1,0 +1,28 @@
+div 
+    h1 #{title} 화면입니다. 
+    form(action="/", method="post") 
+        input(type="text", name="name", placeholder="할일 입력") 
+        button(type="submit") 등록  
+
+    hr
+    each todo, index in todoList
+        p #{todo.no}
+        p #{todo.name}
+        p #{todo.status}
+        p #{todo.reg_date}
+        p #{todo.upd_date}
+        
+        form(action="/update", method="post")  
+            input(type="hidden", name="no", value=todo.no)
+            button(type="submit") 수정 
+        a(href=`/${todo.no}`) 삭제
+
+        hr
+
+    hr
+
+    form(action="/update", method="post")  
+            input(type="hidden", name="no", value='-1')
+            button(type="submit") 전체수정 
+    a(href=`/-1`) 전체삭제
+
