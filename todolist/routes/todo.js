@@ -4,52 +4,55 @@ const Todo = require('../models/todo')
 const router = express.Router()
 
 //전체조회
-router.get('/', async (req, res)=>{
+router.get('/todo', async (req, res)=>{
     let todoList = []
+    console.log("get메소드가 왜 안찍힐까???")
     try {
         todoList = await Todo.findAll()
+        // console.log(todoList)
     } catch (error) {
         console.log(error)
+        res.status(500)
     }
-    res.render('index', {todoList})
+    res.status(200).json(todoList)
 })
 
 // 👩‍💻 게시글 등록
-router.post('/', async (req, res) => {
-    const { name} = req.body;
+router.post('/todo', async (req, res) => {
+    const { name, status} = req.body;
     const newTodo = { name };
-
     let result = 0
     try {
         result = await Todo.create(newTodo)           // ✅ 데이터 등록
+        res.status(200).json(`result`)
     } catch (error) {
         console.log(error);
+        res.status(500).json(`등록실패`)
     }
     console.log(`등록 result : ${result}`);
-    res.redirect('/');
 });
 
 // 👩‍💻 게시글 수정
-router.post('/update', async (req, res) => {
-    console.log('게시글 수정...');
-    const { no } = req.body;
+router.put('/todo', async (req, res) => {
+    const { no, status } = req.body;
     let result = 0
     try {
         if ( no == -1){
             result = await Todo.update({ status : 1 }, { where : {} })
+            
         } else {
-            result = await Todo.update({status : 1}, {where : { no : `${no}`} })
+            result = await Todo.update({status : status}, {where : { no : `${no}`} })
         }
+        res.status(200).json(`result`)
     } catch (error) {
         console.log(error);
+        res.status(500).json(`등록실패`)
     }
     console.log(`수정 result : ${result}`);
-    res.redirect(`/`);
 });
 
 //게시글 삭제
-router.get('/:id', async (req, res)=>{
-    console.log(`여기에 들어가는지?`)
+router.delete('/todo/:id', async (req, res)=>{
     const id = req.params.id;
     let result = 0;
     try {
@@ -58,10 +61,11 @@ router.get('/:id', async (req, res)=>{
         } else {
             result = await Todo.destroy({where : { no : id}})
         }
+        res.status(200).json(`result`)
     } catch (error) {
         console.log(error)
     }
-    res.redirect('/')
+    res.status(500)
 })
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const dotenv = require('dotenv');
@@ -30,8 +31,8 @@ sequelize.sync({ force: false })
   });
 
 // 뷰 엔진 설정: Pug를 사용하도록 설정
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'pug');
 
 // 로깅 미들웨어 설정: 개발 환경에서는 dev 모드로 로그를 출력
 app.use(morgan('dev'));
@@ -67,6 +68,14 @@ app.use(session({
 // 👩‍💻 라우터 설정
 app.use('/', todoRouter);
 // app.use('/board', boardRouter);
+
+//cors 헤덛 추가했습니다. 
+// app.use(cors({
+//   origin: "http://localhost:3000", // 접근 권한을 부여하는 도메인
+//   credentials: true, // 응답 헤더에 Access-Control-Allow-Credentials 추가
+//   optionsSuccessStatus: 200, // 응답 상태 200으로 설정
+// }));
+app.use(cors());
 
 // 404 오류 처리 미들웨어
 app.use((req, res, next) => {
